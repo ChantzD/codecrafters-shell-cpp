@@ -2,6 +2,13 @@
 #include <string>
 #include "shell.h"
 
+namespace shell{
+Shell::Shell(){
+  int_command_map = {
+    {"exit", InternalCommand::EXIT}
+  };
+}
+
 void Shell::run(){
   while(true){
     std::cout << "$ ";
@@ -15,7 +22,14 @@ void Shell::read(){
 }
 
 std::string Shell::eval(){
-  return command + ": command not found\n";
+  InternalCommand cmd = int_command_map.count(command) ? int_command_map[command] : InternalCommand::UNKNOWN;
+  switch (cmd) {
+    case shell::InternalCommand::EXIT:
+      exit(0);
+      break;
+    default:
+      return command + ": command not found\n";
+  }
 }
 
 int main() {
@@ -26,4 +40,4 @@ int main() {
   Shell shell = Shell();
   shell.run();
  }
-
+}
