@@ -24,6 +24,7 @@ void Shell::run(){
 void Shell::read(){
   std::string temp;
   if (std::getline(std::cin, temp)){
+    args.clear();
     stringstream ss(temp);
     ss >> input_command;
 
