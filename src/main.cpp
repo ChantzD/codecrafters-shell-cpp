@@ -1,16 +1,29 @@
 #include <iostream>
 #include <string>
+#include "shell.h"
+
+void Shell::run(){
+  while(true){
+    std::cout << "$ ";
+    read();
+    std::cout << eval();
+  }
+}
+
+void Shell::read(){
+    std::cin >> this->command;
+}
+
+std::string Shell::eval(){
+  return command + ": command not found";
+}
 
 int main() {
   // Flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
 
-  std::string command;
+  Shell shell = Shell();
+  shell.run();
+ }
 
-  // TODO: Uncomment the code below to pass the first stage
-  std::cout << "$ ";
-  std::cin >> command;
-
-  std::cout << command + ": command not found";
-}
