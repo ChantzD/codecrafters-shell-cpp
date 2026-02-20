@@ -61,10 +61,11 @@ void Shell::EchoCommand(){
 }
 
 void Shell::TypeCommand(){
-  if (int_command_map.contains(input_command)){
-    std::cout << args[0] + " is a shell builtin\n";
+  std::string type_arg = args[0];
+  if (int_command_map.contains(type_arg)){
+    std::cout << type_arg + " is a shell builtin\n";
   } else {
-      std::cout << args[0] + ": not found\n";
+    std::cout << type_arg + ": not found\n";
   }
 }
 
