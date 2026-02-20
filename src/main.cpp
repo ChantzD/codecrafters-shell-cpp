@@ -53,7 +53,7 @@ std::string Shell::eval(){
 std::string Shell::EchoCommand(){
   std::string total_echo;
   for (std::string arg : args){
-    total_echo += arg;
+    total_echo += arg + " ";
   }
   return total_echo + "\n";
 }
