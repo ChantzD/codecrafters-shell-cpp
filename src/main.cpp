@@ -15,7 +15,7 @@ void Shell::read(){
 }
 
 std::string Shell::eval(){
-  return command + ": command not found";
+  return command + ": command not found\n";
 }
 
 int main() {
