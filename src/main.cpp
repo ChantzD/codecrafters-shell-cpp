@@ -76,7 +76,8 @@ namespace shell {
         std::filesystem::path full_path = std::filesystem::path(path) / type_arg;
         if (std::filesystem::exists(full_path) && std::filesystem::is_regular_file(full_path)){
           if (access(full_path.c_str(), X_OK) == 0){
-            std::cout << type_arg + " is " << full_path << std::endl;
+            // The .string on the path is annoying and is only there to pass tests -- remove later
+            std::cout << type_arg + " is " << full_path.string() << std::endl;
             return;
           }
         }
