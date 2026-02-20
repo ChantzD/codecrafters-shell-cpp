@@ -1,4 +1,6 @@
 #include <iostream>
+#include <iterator>
+#include <ostream>
 #include <string>
 #include <sstream>
 #include "shell.h"
@@ -17,7 +19,7 @@ void Shell::run(){
   while(true){
     std::cout << "$ ";
     read();
-    std::cout << eval();
+    eval();
   }
 }
 
@@ -35,7 +37,7 @@ void Shell::read(){
   }
 }
 
-std::string Shell::eval(){
+void Shell::eval(){
   InternalCommand cmd = int_command_map.count(input_command) ? int_command_map[input_command] : InternalCommand::UNKNOWN;
   switch (cmd) {
     case shell::InternalCommand::EXIT:
@@ -45,18 +47,20 @@ std::string Shell::eval(){
       return EchoCommand();
       break;
     // TODO: change this to UNKNOWN
-    default:
-      return input_command + ": command not found\n";
+    case shell::InternalCommand::UNKNOWN:
+      std::cout << input_command + ": command not found\n";
       break;
   }
 }
 
-std::string Shell::EchoCommand(){
-  std::string total_echo;
-  for (std::string arg : args){
-    total_echo += arg + " ";
-  }
-  return total_echo + "\n";
+void Shell::EchoCommand(){
+  // std::string total_echo;
+  // for (std::string arg : args){
+  //   total_echo += arg + " ";
+  // }
+  // return total_echo + "\n";
+  std::copy(args.begin(), args.end(), std::ostream_iterator<std::string>(std::cout, " "));
+  std::cout << std::endl;
 }
 
 } // namespace shell

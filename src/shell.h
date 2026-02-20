@@ -11,8 +11,8 @@ enum class InternalCommand {EXIT, ECHO, UNKNOWN};
       void run();
     protected:
       void read();
-      std::string eval();
-      std::string EchoCommand();
+      void eval();
+      void EchoCommand();
     private:
       std::string input_command;
       std::vector<std::string> args;
