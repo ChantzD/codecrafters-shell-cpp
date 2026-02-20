@@ -3,6 +3,7 @@
 #include <ostream>
 #include <string>
 #include <sstream>
+#include <map>
 #include "shell.h"
 
 namespace shell {
@@ -11,7 +12,8 @@ using std::stringstream;
 Shell::Shell(){
   int_command_map = {
     {"exit", InternalCommand::EXIT},
-    {"echo", InternalCommand::ECHO}
+    {"echo", InternalCommand::ECHO},
+    {"type", InternalCommand::TYPE}
   };
 }
 
@@ -19,7 +21,7 @@ void Shell::run(){
   while(true){
     std::cout << "$ ";
     read();
-    eval();
+    eval(int_command_map.count(input_command) ? int_command_map[input_command] : InternalCommand::UNKNOWN);
   }
 }
 
@@ -37,8 +39,7 @@ void Shell::read(){
   }
 }
 
-void Shell::eval(){
-  InternalCommand cmd = int_command_map.count(input_command) ? int_command_map[input_command] : InternalCommand::UNKNOWN;
+void Shell::eval(InternalCommand cmd){
   switch (cmd) {
     case shell::InternalCommand::EXIT:
       exit(0);
@@ -46,21 +47,26 @@ void Shell::eval(){
     case shell::InternalCommand::ECHO:
       return EchoCommand();
       break;
-    // TODO: change this to UNKNOWN
     case shell::InternalCommand::UNKNOWN:
       std::cout << input_command + ": command not found\n";
       break;
+    case shell::InternalCommand::TYPE:
+      TypeCommand();
   }
 }
 
 void Shell::EchoCommand(){
-  // std::string total_echo;
-  // for (std::string arg : args){
-  //   total_echo += arg + " ";
-  // }
-  // return total_echo + "\n";
   std::copy(args.begin(), args.end(), std::ostream_iterator<std::string>(std::cout, " "));
   std::cout << std::endl;
+}
+
+void Shell::TypeCommand(){
+  input_command = args[0];
+  if (int_command_map.contains(input_command)){
+    std::cout << input_command + " is a shell builtin\n";
+  } else {
+    eval(InternalCommand::UNKNOWN);
+  }
 }
 
 } // namespace shell

@@ -3,7 +3,7 @@
 #include <vector>
 
 namespace shell{
-enum class InternalCommand {EXIT, ECHO, UNKNOWN};
+enum class InternalCommand {EXIT, ECHO, TYPE, UNKNOWN};
 
   class Shell{
     public:
@@ -11,8 +11,9 @@ enum class InternalCommand {EXIT, ECHO, UNKNOWN};
       void run();
     protected:
       void read();
-      void eval();
+      void eval(InternalCommand cmd);
       void EchoCommand();
+      void TypeCommand();
     private:
       std::string input_command;
       std::vector<std::string> args;
