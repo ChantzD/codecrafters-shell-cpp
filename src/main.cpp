@@ -58,7 +58,7 @@ namespace shell {
   }
 
   void Shell::EchoCommand(){
-    std::copy(args.begin(), args.end(), std::ostream_iterator<std::string>(std::cout, " "));
+    std::copy(args.begin() + 1, args.end(), std::ostream_iterator<std::string>(std::cout, " "));
     std::cout << std::endl;
   }
 
