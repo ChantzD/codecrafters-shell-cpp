@@ -29,12 +29,13 @@ namespace shell {
     if (std::getline(std::cin, temp)){
       args.clear();
       stringstream ss(temp);
-      ss >> input_command;
+//ss >> input_command;
 
       std::string temp_arg;
       while (ss >> temp_arg){
         args.emplace_back(temp_arg);
       }
+      input_command = args[0];
     }
   }
 
@@ -62,7 +63,7 @@ namespace shell {
   }
 
   void Shell::TypeCommand(){
-    std::string type_arg = args[0];
+    std::string type_arg = args[1];
     if (int_command_map.contains(type_arg)){
       std::cout << type_arg + " is a shell builtin\n";
       return;
