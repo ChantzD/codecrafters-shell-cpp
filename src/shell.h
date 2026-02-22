@@ -16,7 +16,7 @@ enum class InternalCommand {EXIT, ECHO, TYPE, UNKNOWN};
       void eval(InternalCommand cmd);
       void EchoCommand();
       void TypeCommand();
-      bool IsExecutable(const std::filesystem::path& path);
+      bool ExtCommand();
     private:
       std::string input_command;
       const char* path;

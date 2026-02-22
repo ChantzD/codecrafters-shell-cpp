@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <cstdlib>
 #include <unistd.h>
+#include <sys/wait.h>
 
 namespace shell {
   using std::stringstream;
@@ -46,7 +47,9 @@ namespace shell {
         return EchoCommand();
         break;
       case shell::InternalCommand::UNKNOWN:
-        std::cout << input_command + ": command not found\n";
+        if (!ExtCommand()){
+          std::cout << input_command + ": command not found\n";
+        }
         break;
       case shell::InternalCommand::TYPE:
         TypeCommand();
@@ -86,13 +89,51 @@ namespace shell {
     std::cout << type_arg + ": not found\n";
   }
 
-  // bool Shell::IsExecutable(const std::filesystem::path& path){
-  //   std::filesystem::perms prms = std::filesystem::status(path).permissions();
-  //   return (prms & (std::filesystem::perms::owner_exec |
-  //         std::filesystem::perms::group_exec |
-  //         std::filesystem::perms::others_exec)) != std::filesystem::perms::none;
-  // }
+  bool Shell::ExtCommand(){
+    // Basically the same as type command -- need to refactor to get rid of repeat code
+    std::vector<std::string> path_list;
+    stringstream ss(path);
+    std::string temp;
 
+    while(std::getline(ss, temp, ':')){
+      path_list.emplace_back(temp);
+    }
+
+    bool proper_command{false};
+    for (const auto& path : path_list){
+      std::filesystem::path full_path = std::filesystem::path(path) / input_command;
+      if (std::filesystem::exists(full_path) && std::filesystem::is_regular_file(full_path)){
+        if (access(full_path.c_str(), X_OK) == 0){
+          // The .string on the path is annoying and is only there to pass tests -- remove later
+          proper_command = true;
+        }
+      }
+    }
+    if(!proper_command){
+      return proper_command;
+    }
+    // convert args (vector<string>) to char* -- probably need to adjust everything to char*
+    std::vector<char*> c_args;
+    for (const auto& arg : args){
+      c_args.emplace_back(const_cast<char*>(arg.c_str()));
+    }
+    c_args.emplace_back(nullptr);
+
+    pid_t pid = fork();
+    if (pid < 0){
+      perror("Fork failed");
+    }
+    else if (pid == 0){
+      if (execvp(input_command.c_str(), c_args.data()) == -1){
+        perror("Execution failed");
+      }
+      exit(EXIT_FAILURE);
+    } else {
+      int status;
+      waitpid(pid, &status, 0);
+    }
+    return proper_command;
+  }
 } // namespace shell
 
 int main() {
